@@ -1,9 +1,9 @@
-const CACHE_NAME = "gastos-mensuales-v10";
+const CACHE_NAME = "gastos-mensuales-v11";
 const ASSETS = [
   "./",
-  "./index.html?v=10",
-  "./styles.css?v=10",
-  "./app.js?v=10",
+  "./index.html?v=11",
+  "./styles.css?v=11",
+  "./app.js?v=11",
   "./manifest.json",
   "./assets/icon.svg",
   "./assets/icon-192.png",
@@ -34,6 +34,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html?v=10") || caches.match("./"))),
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html?v=11") || caches.match("./"))),
   );
 });

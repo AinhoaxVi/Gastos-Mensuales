@@ -118,12 +118,15 @@ const els = {
   dateInput: document.querySelector("#dateInput"),
   noteInput: document.querySelector("#noteInput"),
   quickButtons: document.querySelector("#quickButtons"),
+  quickButtonsAdd: document.querySelector("#quickButtonsAdd"),
   searchInput: document.querySelector("#searchInput"),
   categoryFilter: document.querySelector("#categoryFilter"),
   categoryBars: document.querySelector("#categoryBars"),
   movementList: document.querySelector("#movementList"),
   latestList: document.querySelector("#latestList"),
   csvFile: document.querySelector("#csvFile"),
+  csvFileTrigger: document.querySelector("#csvFileTrigger"),
+  csvFileName: document.querySelector("#csvFileName"),
   csvText: document.querySelector("#csvText"),
   previewCsv: document.querySelector("#previewCsv"),
   importPreview: document.querySelector("#importPreview"),
@@ -236,10 +239,13 @@ function bindEvents() {
     showToast("Movimiento guardado");
   });
 
+  els.csvFileTrigger?.addEventListener("click", () => els.csvFile?.click());
+
   els.csvFile.addEventListener("change", async () => {
     const file = els.csvFile.files?.[0];
     if (!file) return;
     els.csvText.value = await file.text();
+    if (els.csvFileName) els.csvFileName.textContent = file.name;
     showToast("CSV cargado");
   });
 
@@ -287,6 +293,7 @@ function switchView(view, options = {}) {
   document.querySelector(`#${view}View`).classList.add("active");
   if (options.top) window.setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 20);
   if (view === "list") window.setTimeout(() => els.searchInput?.focus({ preventScroll: true }), 160);
+  if (view === "add") window.setTimeout(() => els.amountInput?.focus({ preventScroll: true }), 160);
 }
 
 function render() {
@@ -315,11 +322,12 @@ function renderPalette() {
 }
 
 function prepareQuickEntry(type) {
-  switchView("quick");
+  switchView("add", { top: true });
   els.typeInput.value = type;
-  if (type === "income") els.categoryInput.value = "Ingresos";
+  els.categoryInput.value = type === "income" ? "Ingresos" : "Otros";
+  els.dateInput.value = today();
   window.setTimeout(() => {
-    document.querySelector(".quick-add-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.querySelector(".add-view-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
     window.setTimeout(() => els.amountInput.focus(), 220);
   }, 80);
 }
@@ -420,20 +428,23 @@ function renderCategoryBars(txs) {
 }
 
 function renderQuickButtons() {
-  els.quickButtons.innerHTML = "";
-  quickTemplates.forEach((template) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.innerHTML = `<strong>${escapeHtml(template.merchant)}</strong><span>${money(template.amount)} · ${escapeHtml(template.category)}</span>`;
-    button.addEventListener("click", () => {
-      els.amountInput.value = String(template.amount).replace(".", ",");
-      els.typeInput.value = template.type || "expense";
-      els.merchantInput.value = template.merchant;
-      els.categoryInput.value = template.category;
-      els.dateInput.value = today();
-      els.noteInput.focus();
+  [els.quickButtons, els.quickButtonsAdd].filter(Boolean).forEach((container) => {
+    container.innerHTML = "";
+    quickTemplates.forEach((template) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.innerHTML = `<strong>${escapeHtml(template.merchant)}</strong><span>${money(template.amount)} · ${escapeHtml(template.category)}</span>`;
+      button.addEventListener("click", () => {
+        switchView("add", { top: true });
+        els.amountInput.value = String(template.amount).replace(".", ",");
+        els.typeInput.value = template.type || "expense";
+        els.merchantInput.value = template.merchant;
+        els.categoryInput.value = template.category;
+        els.dateInput.value = today();
+        window.setTimeout(() => els.noteInput.focus(), 180);
+      });
+      container.append(button);
     });
-    els.quickButtons.append(button);
   });
 }
 
@@ -507,6 +518,7 @@ function importPendingTransactions() {
   pendingImport = [];
   els.csvText.value = "";
   els.csvFile.value = "";
+  if (els.csvFileName) els.csvFileName.textContent = "O pega el CSV directamente aquí abajo";
   save();
   render();
   els.importPreview.innerHTML = `<div class="empty-state">Importación lista. Los movimientos dudosos quedan marcados como “revisar”.</div>`;

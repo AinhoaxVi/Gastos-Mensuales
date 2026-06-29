@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#111827" />
+    <meta name="theme-color" content="#a33e6d" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Gastos" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="format-detection" content="telephone=no" />
@@ -13,7 +13,7 @@
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles.css?v=10" />
+    <link rel="stylesheet" href="./styles.css?v=11" />
   </head>
   <body>
     <div class="app-shell">
@@ -130,11 +130,33 @@
             </div>
           </section>
 
-          <section class="glass-card quick-add-card">
+          <section class="glass-card quick-presets">
             <div class="section-title">
-              <h2>Añadir movimiento</h2>
-              <span>Rápido, limpio y sin hacer contabilidad como si fuera 2009.</span>
+              <h2>Atajos</h2>
+              <span>Para esos gastos que aparecen con más constancia que la mala suerte.</span>
             </div>
+            <div class="quick-grid" id="quickButtons" aria-label="Plantillas rápidas"></div>
+          </section>
+
+          <section class="glass-card recent-card">
+            <div class="section-title inline-title">
+              <div>
+                <h2>Últimos movimientos</h2>
+                <span>Lo más reciente del ciclo.</span>
+              </div>
+              <button class="text-link tab-jump" data-view="list" type="button">Ver todo</button>
+            </div>
+            <div class="movement-list compact" id="latestList"></div>
+          </section>
+        </section>
+
+        <section class="view page-view" id="addView">
+          <div class="screen-title">
+            <span>Nuevo</span>
+            <h2>Añadir movimiento</h2>
+            <p>Meter un gasto o un ingreso sin pelearte con la app.</p>
+          </div>
+          <section class="glass-card quick-add-card add-view-card">
             <form class="entry-form" id="transactionForm">
               <div class="amount-line">
                 <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="0,00" required aria-label="Importe" />
@@ -153,23 +175,12 @@
             </form>
           </section>
 
-          <section class="glass-card quick-presets">
+          <section class="glass-card quick-presets add-presets">
             <div class="section-title">
               <h2>Atajos</h2>
-              <span>Para esos gastos que aparecen con más constancia que la mala suerte.</span>
+              <span>Para rellenarlo en dos toques y a correr.</span>
             </div>
-            <div class="quick-grid" id="quickButtons" aria-label="Plantillas rápidas"></div>
-          </section>
-
-          <section class="glass-card recent-card">
-            <div class="section-title inline-title">
-              <div>
-                <h2>Últimos movimientos</h2>
-                <span>Lo más reciente del ciclo.</span>
-              </div>
-              <button class="text-link tab-jump" data-view="list" type="button">Ver todo</button>
-            </div>
-            <div class="movement-list compact" id="latestList"></div>
+            <div class="quick-grid" id="quickButtonsAdd" aria-label="Plantillas rápidas para añadir"></div>
           </section>
         </section>
 
@@ -194,7 +205,11 @@
             <p>Sube o pega el CSV y revisa antes de meterlo. Sin magia, pero sin caos.</p>
           </div>
           <div class="glass-card import-panel">
-            <input id="csvFile" type="file" accept=".csv,.txt" aria-label="Archivo CSV" />
+            <div class="file-picker" aria-label="Archivo CSV">
+              <input id="csvFile" class="sr-only" type="file" accept=".csv,.txt" aria-label="Archivo CSV" />
+              <button class="secondary-button" id="csvFileTrigger" type="button">Seleccionar archivo</button>
+              <span id="csvFileName">O pega el CSV directamente aquí abajo</span>
+            </div>
             <textarea id="csvText" rows="7" placeholder="Pega aquí el CSV del banco..."></textarea>
             <button class="primary" id="previewCsv" type="button">Previsualizar</button>
           </div>
@@ -287,6 +302,15 @@
           </svg>
           Lista
         </button>
+        <button class="tab tab-add" data-view="add" type="button" aria-label="Añadir movimiento">
+          <span class="tab-add-bubble">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+            </svg>
+          </span>
+          Añadir
+        </button>
         <button class="tab" data-view="import" type="button">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3v12"></path>
@@ -359,6 +383,6 @@
       </article>
     </template>
 
-    <script src="./app.js?v=10" type="module"></script>
+    <script src="./app.js?v=11" type="module"></script>
   </body>
 </html>
