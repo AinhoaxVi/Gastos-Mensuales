@@ -1,5 +1,5 @@
 {
-  "name": "gastos-ainhoa",
+  "name": "gastos-mensuales",
   "version": "0.1.0",
   "private": true,
   "description": "PWA de control de gastos con entrada rapida e importacion CSV.",

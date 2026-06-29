@@ -1,4 +1,4 @@
-# Gastos Ainhoa
+# Gastos Mensuales
 
 PWA sencilla para controlar gastos sin depender de una app bancaria desde el minuto uno.
 
@@ -6,6 +6,7 @@ PWA sencilla para controlar gastos sin depender de una app bancaria desde el min
 
 - Entrada rapida de gastos e ingresos.
 - Resumen mensual con ingresos, gastos, disponible y presupuesto.
+- Ciclo mensual configurable por dia de cobro, por defecto del 27 al 26.
 - Categorias y barras por categoria.
 - Importacion CSV desde el banco con deteccion basica de fecha, concepto e importe.
 - Reglas automaticas para clasificar comercios comunes.

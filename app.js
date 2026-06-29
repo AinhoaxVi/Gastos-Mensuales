@@ -38,14 +38,10 @@ const defaultState = {
   settings: {
     monthlyBudget: 900,
     savingGoal: 200,
+    cycleStartDay: 27,
     theme: "dark",
   },
-  transactions: [
-    sampleTx("income", 1300, "Nomina", "Ingresos", offsetDate(0), "Ejemplo"),
-    sampleTx("expense", 400, "Alquiler", "Casa", offsetDate(1), "Ejemplo"),
-    sampleTx("expense", 28.5, "Mercadona", "Comida", offsetDate(2), "Ejemplo"),
-    sampleTx("expense", 35, "Gasolina", "Coche", offsetDate(3), "Ejemplo"),
-  ],
+  transactions: [],
 };
 
 let state = loadState();
@@ -54,6 +50,7 @@ let pendingImport = [];
 const els = {
   themeToggle: document.querySelector("#themeToggle"),
   monthPicker: document.querySelector("#monthPicker"),
+  periodLabel: document.querySelector("#periodLabel"),
   balanceLabel: document.querySelector("#balanceLabel"),
   balanceHint: document.querySelector("#balanceHint"),
   budgetRing: document.querySelector("#budgetRing"),
@@ -73,6 +70,7 @@ const els = {
   categoryFilter: document.querySelector("#categoryFilter"),
   categoryBars: document.querySelector("#categoryBars"),
   movementList: document.querySelector("#movementList"),
+  latestList: document.querySelector("#latestList"),
   csvFile: document.querySelector("#csvFile"),
   csvText: document.querySelector("#csvText"),
   previewCsv: document.querySelector("#previewCsv"),
@@ -80,6 +78,7 @@ const els = {
   settingsForm: document.querySelector("#settingsForm"),
   monthlyBudgetInput: document.querySelector("#monthlyBudgetInput"),
   savingGoalInput: document.querySelector("#savingGoalInput"),
+  cycleStartDayInput: document.querySelector("#cycleStartDayInput"),
   exportJson: document.querySelector("#exportJson"),
   exportCsv: document.querySelector("#exportCsv"),
   resetDemo: document.querySelector("#resetDemo"),
@@ -93,6 +92,7 @@ function init() {
   els.dateInput.value = today();
   els.monthlyBudgetInput.value = String(state.settings.monthlyBudget);
   els.savingGoalInput.value = String(state.settings.savingGoal);
+  els.cycleStartDayInput.value = String(state.settings.cycleStartDay);
 
   fillSelect(els.categoryInput, categories);
   fillSelect(els.categoryFilter, ["Todas", ...categories]);
@@ -108,6 +108,10 @@ function init() {
 function bindEvents() {
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.addEventListener("click", () => switchView(tab.dataset.view));
+  });
+
+  document.querySelectorAll(".tab-jump").forEach((button) => {
+    button.addEventListener("click", () => switchView(button.dataset.view));
   });
 
   els.themeToggle.addEventListener("click", () => {
@@ -158,12 +162,13 @@ function bindEvents() {
     event.preventDefault();
     state.settings.monthlyBudget = parseMoney(els.monthlyBudgetInput.value) || 0;
     state.settings.savingGoal = parseMoney(els.savingGoalInput.value) || 0;
+    state.settings.cycleStartDay = clampDay(parseMoney(els.cycleStartDayInput.value) || 27);
     save();
     render();
   });
 
-  els.exportJson.addEventListener("click", () => download("gastos-ainhoa-backup.json", JSON.stringify(state, null, 2), "application/json"));
-  els.exportCsv.addEventListener("click", () => download("gastos-ainhoa-movimientos.csv", toCsv(state.transactions), "text/csv"));
+  els.exportJson.addEventListener("click", () => download("gastos-mensuales-backup.json", JSON.stringify(state, null, 2), "application/json"));
+  els.exportCsv.addEventListener("click", () => download("gastos-mensuales-movimientos.csv", toCsv(state.transactions), "text/csv"));
   els.resetDemo.addEventListener("click", () => {
     if (!confirm("Seguro que quieres vaciar todos los movimientos?")) return;
     state.transactions = [];
@@ -181,10 +186,12 @@ function switchView(view) {
 function render() {
   renderSummary();
   renderMovements();
+  renderLatest();
 }
 
 function renderSummary() {
   const txs = monthTransactions();
+  const period = selectedPeriod();
   const income = sum(txs.filter((tx) => tx.type === "income"));
   const expense = sum(txs.filter((tx) => tx.type === "expense"));
   const balance = income - expense;
@@ -193,7 +200,8 @@ function renderSummary() {
   const circumference = 301.6;
 
   els.balanceLabel.textContent = money(balance);
-  els.balanceHint.textContent = balance >= 0 ? "Balance del mes" : "Te has pasado este mes";
+  els.periodLabel.textContent = `Ciclo ${shortDate(period.start)} - ${shortDate(period.end)}`;
+  els.balanceHint.textContent = balance >= 0 ? "Balance del ciclo" : "Te has pasado en este ciclo";
   els.incomeStat.textContent = money(income);
   els.expenseStat.textContent = money(expense);
   els.availableStat.textContent = money(available);
@@ -221,6 +229,23 @@ function renderMovements() {
   filtered.forEach((tx) => {
     const node = movementNode(tx);
     els.movementList.append(node);
+  });
+}
+
+function renderLatest() {
+  if (!els.latestList) return;
+  const txs = monthTransactions()
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 4);
+
+  els.latestList.innerHTML = "";
+  if (!txs.length) {
+    els.latestList.innerHTML = `<div class="empty-state">Todavia no hay movimientos este mes.</div>`;
+    return;
+  }
+
+  txs.forEach((tx) => {
+    els.latestList.append(movementNode(tx));
   });
 }
 
@@ -273,7 +298,12 @@ function movementNode(tx) {
   const amount = node.querySelector(".movement-amount");
   amount.textContent = `${tx.type === "expense" ? "-" : "+"}${money(tx.amount)}`;
   amount.classList.add(tx.type);
-  node.querySelector(".movement-delete").addEventListener("click", () => deleteTransaction(tx.id));
+  const deleteButton = node.querySelector(".movement-delete");
+  if (String(tx.id).startsWith("preview-")) {
+    deleteButton.hidden = true;
+  } else {
+    deleteButton.addEventListener("click", () => deleteTransaction(tx.id));
+  }
   return node;
 }
 
@@ -399,8 +429,31 @@ function deleteTransaction(id) {
 }
 
 function monthTransactions() {
-  const month = els.monthPicker.value || currentMonth();
-  return state.transactions.filter((tx) => tx.date.startsWith(month));
+  const period = selectedPeriod();
+  return state.transactions.filter((tx) => tx.date >= period.start && tx.date <= period.end);
+}
+
+function selectedPeriod() {
+  const [year, month] = (els.monthPicker.value || currentMonth()).split("-").map(Number);
+  const startDay = clampDay(state.settings.cycleStartDay || 27);
+  const start = makeDate(year, month, startDay);
+  const next = makeDate(month === 12 ? year + 1 : year, month === 12 ? 1 : month + 1, startDay);
+  const endDate = new Date(`${next}T12:00:00`);
+  endDate.setDate(endDate.getDate() - 1);
+  return { start, end: endDate.toISOString().slice(0, 10) };
+}
+
+function makeDate(year, month, preferredDay) {
+  const day = Math.min(preferredDay, daysInMonth(year, month));
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function daysInMonth(year, month) {
+  return new Date(year, month, 0).getDate();
+}
+
+function clampDay(day) {
+  return Math.max(1, Math.min(31, Math.round(Number(day) || 27)));
 }
 
 function categorize(text) {
@@ -436,6 +489,10 @@ function formatDate(value) {
   return new Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "short" }).format(new Date(`${value}T12:00:00`));
 }
 
+function shortDate(value) {
+  return new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "short" }).format(new Date(`${value}T12:00:00`));
+}
+
 function money(value) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(value || 0);
 }
@@ -451,7 +508,13 @@ function fillSelect(select, values) {
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return saved ? { ...defaultState, ...saved, settings: { ...defaultState.settings, ...saved.settings } } : defaultState;
+    if (!saved) return defaultState;
+    return {
+      ...defaultState,
+      ...saved,
+      settings: { ...defaultState.settings, ...saved.settings },
+      transactions: (saved.transactions || []).filter((tx) => tx.source !== "demo"),
+    };
   } catch {
     return defaultState;
   }
@@ -462,21 +525,15 @@ function save() {
 }
 
 function currentMonth() {
-  return today().slice(0, 7);
+  const now = new Date(`${today()}T12:00:00`);
+  const startDay = clampDay(state?.settings?.cycleStartDay || 27);
+  if (now.getDate() >= startDay) return today().slice(0, 7);
+  now.setMonth(now.getMonth() - 1);
+  return now.toISOString().slice(0, 7);
 }
 
 function today() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function offsetDate(days) {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString().slice(0, 10);
-}
-
-function sampleTx(type, amount, merchant, category, date, note) {
-  return { id: crypto.randomUUID(), type, amount, merchant, category, date, note, source: "demo", reviewed: true };
 }
 
 function normalize(value) {

@@ -1,5 +1,5 @@
 {
-  "name": "Gastos Ainhoa",
+  "name": "Gastos Mensuales",
   "short_name": "Gastos",
   "description": "Control de gastos personal con entrada rapida, presupuestos e importacion CSV.",
   "start_url": "./index.html",

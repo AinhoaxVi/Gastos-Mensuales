@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#111827" />
-    <title>Gastos Ainhoa</title>
+    <meta name="theme-color" content="#0f172a" />
+    <title>Gastos Mensuales</title>
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
@@ -13,94 +13,113 @@
     <div class="app-shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">Control mensual</p>
-          <h1>Gastos Ainhoa</h1>
+          <span class="eyebrow">Mi dinero</span>
+          <h1>Gastos mensuales</h1>
         </div>
         <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
       </header>
 
+      <nav class="tabs" aria-label="Secciones">
+        <button class="tab active" data-view="quick" type="button">
+          <span>⌂</span>
+          Inicio
+        </button>
+        <button class="tab" data-view="list" type="button">
+          <span>≡</span>
+          Lista
+        </button>
+        <button class="tab" data-view="import" type="button">
+          <span>⇣</span>
+          Importar
+        </button>
+        <button class="tab" data-view="settings" type="button">
+          <span>⚙</span>
+          Ajustes
+        </button>
+      </nav>
+
       <main>
-        <section class="hero-panel">
-          <div class="hero-copy">
-            <label for="monthPicker">Mes</label>
-            <input id="monthPicker" type="month" />
-            <h2 id="balanceLabel">0,00 €</h2>
-            <p id="balanceHint">Balance del mes</p>
-          </div>
-          <div class="meter">
-            <svg viewBox="0 0 120 120" role="img" aria-label="Progreso del presupuesto">
-              <circle class="meter-bg" cx="60" cy="60" r="48"></circle>
-              <circle class="meter-bar" id="budgetRing" cx="60" cy="60" r="48"></circle>
-            </svg>
-            <strong id="budgetPercent">0%</strong>
-            <span>gastado</span>
-          </div>
-        </section>
-
-        <section class="stat-grid" aria-label="Resumen">
-          <article>
-            <span>Ingresos</span>
-            <strong id="incomeStat">0,00 €</strong>
-          </article>
-          <article>
-            <span>Gastos</span>
-            <strong id="expenseStat">0,00 €</strong>
-          </article>
-          <article>
-            <span>Disponible</span>
-            <strong id="availableStat">0,00 €</strong>
-          </article>
-        </section>
-
-        <nav class="tabs" aria-label="Secciones">
-          <button class="tab active" data-view="quick">Añadir</button>
-          <button class="tab" data-view="list">Movimientos</button>
-          <button class="tab" data-view="import">Importar</button>
-          <button class="tab" data-view="settings">Ajustes</button>
-        </nav>
-
         <section class="view active" id="quickView">
-          <form class="entry-form" id="transactionForm">
-            <div class="amount-row">
-              <label>
-                Importe
-                <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="12,50" required />
+          <section class="balance-card">
+            <div class="balance-head">
+              <label class="month-control" for="monthPicker">
+                Ciclo de
+                <input id="monthPicker" type="month" />
               </label>
-              <label>
-                Tipo
-                <select id="typeInput">
+              <div class="meter">
+                <svg viewBox="0 0 120 120" role="img" aria-label="Progreso del presupuesto">
+                  <circle class="meter-bg" cx="60" cy="60" r="48"></circle>
+                  <circle class="meter-bar" id="budgetRing" cx="60" cy="60" r="48"></circle>
+                </svg>
+                <strong id="budgetPercent">0%</strong>
+              </div>
+            </div>
+            <span class="period-label" id="periodLabel">Ciclo mensual</span>
+            <p id="balanceHint">Disponible este mes</p>
+            <h2 id="balanceLabel">0,00 €</h2>
+            <div class="mini-stats" aria-label="Resumen mensual">
+              <article>
+                <span>Ingresos</span>
+                <strong id="incomeStat">0,00 €</strong>
+              </article>
+              <article>
+                <span>Gastado</span>
+                <strong id="expenseStat">0,00 €</strong>
+              </article>
+              <article>
+                <span>Libre</span>
+                <strong id="availableStat">0,00 €</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="quick-add-card">
+            <div class="section-title">
+              <h2>Añadir rápido</h2>
+              <span>Sin drama</span>
+            </div>
+            <form class="entry-form" id="transactionForm">
+              <div class="amount-line">
+                <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="0,00" required />
+                <select id="typeInput" aria-label="Tipo">
                   <option value="expense">Gasto</option>
                   <option value="income">Ingreso</option>
                 </select>
-              </label>
-            </div>
-            <label>
-              Comercio o concepto
-              <input id="merchantInput" autocomplete="off" placeholder="Mercadona, gasolina, alquiler..." required />
-            </label>
-            <div class="amount-row">
-              <label>
-                Categoria
-                <select id="categoryInput"></select>
-              </label>
-              <label>
-                Fecha
-                <input id="dateInput" type="date" required />
-              </label>
-            </div>
-            <label>
-              Nota
-              <input id="noteInput" autocomplete="off" placeholder="Opcional" />
-            </label>
-            <button class="primary" type="submit">Guardar movimiento</button>
-          </form>
+              </div>
+              <input id="merchantInput" autocomplete="off" placeholder="Concepto: Mercadona, gasolina..." required />
+              <div class="form-grid">
+                <select id="categoryInput" aria-label="Categoria"></select>
+                <input id="dateInput" type="date" required aria-label="Fecha" />
+              </div>
+              <input id="noteInput" autocomplete="off" placeholder="Nota opcional" />
+              <button class="primary" type="submit">Guardar</button>
+            </form>
+          </section>
 
-          <div class="quick-grid" id="quickButtons" aria-label="Plantillas rapidas"></div>
+          <section class="quick-presets">
+            <div class="section-title">
+              <h2>Atajos</h2>
+              <span>Un toque y editas</span>
+            </div>
+            <div class="quick-grid" id="quickButtons" aria-label="Plantillas rapidas"></div>
+          </section>
+
+          <section class="recent-card">
+            <div class="section-title">
+              <h2>Últimos movimientos</h2>
+              <button class="text-link tab-jump" data-view="list" type="button">Ver todo</button>
+            </div>
+            <div class="movement-list compact" id="latestList"></div>
+          </section>
         </section>
 
         <section class="view" id="listView">
+          <div class="screen-title">
+            <h2>Movimientos</h2>
+            <p>Busca, filtra y borra lo que no toque.</p>
+          </div>
           <div class="toolbar">
-            <input id="searchInput" type="search" placeholder="Buscar movimiento..." />
+            <input id="searchInput" type="search" placeholder="Buscar..." />
             <select id="categoryFilter"></select>
           </div>
           <div class="category-bars" id="categoryBars"></div>
@@ -108,44 +127,50 @@
         </section>
 
         <section class="view" id="importView">
+          <div class="screen-title">
+            <h2>Importar banco</h2>
+            <p>Pega o sube un CSV y revisas antes de meterlo.</p>
+          </div>
           <div class="import-panel">
-            <h3>Importar CSV del banco</h3>
-            <p>
-              Exportas movimientos desde la web/app del banco, lo sueltas aqui y la app intenta detectar
-              fecha, concepto e importe. Luego categoriza por reglas.
-            </p>
             <input id="csvFile" type="file" accept=".csv,.txt" />
-            <textarea id="csvText" rows="7" placeholder="O pega aqui el CSV..."></textarea>
-            <button class="primary" id="previewCsv" type="button">Previsualizar importacion</button>
+            <textarea id="csvText" rows="7" placeholder="Pega aqui el CSV del banco..."></textarea>
+            <button class="primary" id="previewCsv" type="button">Previsualizar</button>
           </div>
           <div id="importPreview" class="movement-list"></div>
         </section>
 
         <section class="view" id="settingsView">
-          <form class="entry-form" id="settingsForm">
+          <div class="screen-title">
+            <h2>Ajustes</h2>
+            <p>Presupuesto, ahorro y copias.</p>
+          </div>
+          <form class="settings-card" id="settingsForm">
             <label>
-              Presupuesto mensual de gasto
+              Presupuesto mensual
               <input id="monthlyBudgetInput" inputmode="decimal" placeholder="900" />
             </label>
             <label>
-              Objetivo de ahorro mensual
+              Ahorro objetivo
               <input id="savingGoalInput" inputmode="decimal" placeholder="200" />
+            </label>
+            <label>
+              Dia que empieza tu mes
+              <input id="cycleStartDayInput" inputmode="numeric" min="1" max="31" placeholder="27" />
             </label>
             <button class="primary" type="submit">Guardar ajustes</button>
           </form>
 
           <div class="settings-actions">
-            <button id="exportJson" type="button">Exportar copia</button>
+            <button id="exportJson" type="button">Copia JSON</button>
             <button id="exportCsv" type="button">Exportar CSV</button>
-            <button id="resetDemo" class="danger" type="button">Vaciar datos</button>
+            <button id="resetDemo" class="danger" type="button">Vaciar</button>
           </div>
 
           <details>
-            <summary>Que se puede automatizar de verdad</summary>
+            <summary>Automatizar con banco</summary>
             <div class="details-copy">
-              <p><strong>Wallet:</strong> iPhone no deja leer el historial de pagos de tus tarjetas desde una app normal.</p>
-              <p><strong>Banco:</strong> se puede por PSD2/Open Banking con proveedor tipo Tink o Enable Banking, pero necesita backend, consentimiento y puede traer retrasos.</p>
-              <p><strong>Pragmatico:</strong> importacion CSV + reglas + entrada rapida. Es lo que menos pelea da para empezar.</p>
+              <p>Wallet no deja leer tus pagos. La via realista es banco por PSD2/Open Banking con backend.</p>
+              <p>Mientras tanto, CSV + atajos rapidos es lo menos pesado para no abandonar la app a los tres dias.</p>
             </div>
           </details>
         </section>
@@ -154,6 +179,7 @@
 
     <template id="movementTemplate">
       <article class="movement">
+        <div class="movement-icon" aria-hidden="true"></div>
         <div class="movement-main">
           <strong class="movement-title"></strong>
           <span class="movement-meta"></span>
