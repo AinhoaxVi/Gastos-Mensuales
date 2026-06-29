@@ -7,8 +7,8 @@ PWA sencilla para controlar gastos sin depender de una app bancaria desde el min
 - Entrada rapida de gastos e ingresos.
 - Resumen mensual con ingresos, gastos, disponible y presupuesto.
 - Ciclo mensual configurable por dia de cobro, por defecto del 27 al 26.
-- Apariencia configurable con modo claro/oscuro y varias paletas de color.
-- Home visual tipo app bancaria moderna, con fondo degradado y acciones rapidas.
+- Apariencia configurable con modo claro/oscuro y paletas que actualizan también el color de ventana en iOS.
+- Home visual tipo app bancaria moderna, con degradado a pantalla completa, acciones rápidas y barra inferior pulida.
 - Categorias y barras por categoria.
 - Importacion CSV desde el banco con deteccion basica de fecha, concepto e importe.
 - Reglas automaticas para clasificar comercios comunes.
@@ -29,6 +29,10 @@ Tambien se puede abrir `index.html` directamente, aunque para PWA/service worker
 La app esta pensada para empezar con entrada rapida e importacion CSV. La integracion bancaria real iria en una segunda fase con backend y un proveedor PSD2/Open Banking.
 
 Apple Wallet no expone a una app normal el historial de pagos de tus tarjetas. La via realista para detectar movimientos es el banco, no Wallet.
+
+## Notas de uso en iPhone
+
+Para que el degradado ocupe toda la pantalla como app real, abre la web y añádela a inicio. En Safari normal la barra del navegador puede seguir apareciendo porque iOS decide hacer de iOS.
 
 ## Siguiente fase recomendada
 

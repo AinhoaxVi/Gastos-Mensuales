@@ -2,11 +2,11 @@
   "name": "Gastos Mensuales",
   "short_name": "Gastos",
   "description": "Control de gastos personal con entrada rapida, presupuestos e importacion CSV.",
-  "start_url": "./index.html",
+  "start_url": "./index.html?v=7",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f65d79",
-  "theme_color": "#f65d79",
+  "background_color": "#ff7a66",
+  "theme_color": "#ff7a66",
   "icons": [
     {
       "src": "./assets/icon.svg",
@@ -14,5 +14,6 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./index.html"
 }
