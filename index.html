@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f4f6fb" />
+    <meta name="theme-color" content="#f65d79" />
     <title>Gastos Mensuales</title>
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
@@ -12,23 +12,248 @@
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <span class="eyebrow">Mi dinero</span>
-          <h1>Gastos mensuales</h1>
-        </div>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">
+        <button class="avatar-button" type="button" aria-label="Perfil">AX</button>
+        <button class="search-pill tab-jump" data-view="list" type="button">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m21 21-4.3-4.3"></path>
+            <path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"></path>
+          </svg>
+          Buscar
+        </button>
+        <button class="top-action tab-jump" data-view="list" type="button" aria-label="Ver resumen">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 20V10"></path>
+            <path d="M12 20V4"></path>
+            <path d="M19 20v-7"></path>
+          </svg>
+        </button>
+        <button class="top-action" id="themeToggle" type="button" aria-label="Cambiar tema">
           <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"></path>
           </svg>
         </button>
       </header>
 
+      <main>
+        <section class="view active" id="quickView">
+          <section class="hero-panel">
+            <div class="hero-balance">
+              <span class="account-label">Personal · EUR</span>
+              <h1 id="balanceLabel">0,00 €</h1>
+              <span class="period-label" id="periodLabel">Ciclo mensual</span>
+              <label class="cycle-picker" for="monthPicker">
+                Ciclo de
+                <input id="monthPicker" type="month" />
+              </label>
+            </div>
+
+            <div class="action-row" aria-label="Acciones rapidas">
+              <button class="round-action" id="expenseAction" type="button">
+                <span>
+                  <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14"></path>
+                    <path d="M5 12h14"></path>
+                  </svg>
+                </span>
+                Gasto
+              </button>
+              <button class="round-action" id="incomeAction" type="button">
+                <span>
+                  <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14"></path>
+                    <path d="m18 13-6 6-6-6"></path>
+                  </svg>
+                </span>
+                Ingreso
+              </button>
+              <button class="round-action tab-jump" data-view="import" type="button">
+                <span>
+                  <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12"></path>
+                    <path d="m7 10 5 5 5-5"></path>
+                    <path d="M4 21h16"></path>
+                  </svg>
+                </span>
+                Importar
+              </button>
+              <button class="round-action tab-jump" data-view="settings" type="button">
+                <span>
+                  <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h.01"></path>
+                    <path d="M12 12h.01"></path>
+                    <path d="M19 12h.01"></path>
+                  </svg>
+                </span>
+                Más
+              </button>
+            </div>
+          </section>
+
+          <section class="glass-card progress-card">
+            <div class="meter">
+              <svg viewBox="0 0 120 120" role="img" aria-label="Progreso del presupuesto">
+                <circle class="meter-bg" cx="60" cy="60" r="48"></circle>
+                <circle class="meter-bar" id="budgetRing" cx="60" cy="60" r="48"></circle>
+              </svg>
+              <strong id="budgetPercent">0%</strong>
+            </div>
+            <div>
+              <h2 id="balanceHint">Balance del ciclo</h2>
+              <p>Control segun tu ciclo de nomina.</p>
+            </div>
+            <div class="mini-stats" aria-label="Resumen mensual">
+              <article>
+                <span>Ingresos</span>
+                <strong id="incomeStat">0,00 €</strong>
+              </article>
+              <article>
+                <span>Gastado</span>
+                <strong id="expenseStat">0,00 €</strong>
+              </article>
+              <article>
+                <span>Libre</span>
+                <strong id="availableStat">0,00 €</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="glass-card quick-add-card">
+            <div class="section-title">
+              <h2>Añadir movimiento</h2>
+              <span>Rapido y sin Excel mental</span>
+            </div>
+            <form class="entry-form" id="transactionForm">
+              <div class="amount-line">
+                <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="0,00" required />
+                <select id="typeInput" aria-label="Tipo">
+                  <option value="expense">Gasto</option>
+                  <option value="income">Ingreso</option>
+                </select>
+              </div>
+              <input id="merchantInput" autocomplete="off" placeholder="Concepto: Mercadona, gasolina..." required />
+              <div class="form-grid">
+                <select id="categoryInput" aria-label="Categoria"></select>
+                <input id="dateInput" type="date" required aria-label="Fecha" />
+              </div>
+              <input id="noteInput" autocomplete="off" placeholder="Nota opcional" />
+              <button class="primary" type="submit">Guardar</button>
+            </form>
+          </section>
+
+          <section class="glass-card quick-presets">
+            <div class="section-title">
+              <h2>Atajos</h2>
+              <span>Un toque y editas</span>
+            </div>
+            <div class="quick-grid" id="quickButtons" aria-label="Plantillas rapidas"></div>
+          </section>
+
+          <section class="glass-card recent-card">
+            <div class="section-title">
+              <h2>Últimos movimientos</h2>
+              <button class="text-link tab-jump" data-view="list" type="button">Ver todo</button>
+            </div>
+            <div class="movement-list compact" id="latestList"></div>
+          </section>
+        </section>
+
+        <section class="view page-view" id="listView">
+          <div class="screen-title">
+            <h2>Movimientos</h2>
+            <p>Busca, filtra y borra lo que no toque.</p>
+          </div>
+          <div class="toolbar">
+            <input id="searchInput" type="search" placeholder="Buscar..." />
+            <select id="categoryFilter"></select>
+          </div>
+          <div class="category-bars" id="categoryBars"></div>
+          <div class="movement-list" id="movementList"></div>
+        </section>
+
+        <section class="view page-view" id="importView">
+          <div class="screen-title">
+            <h2>Importar banco</h2>
+            <p>Pega o sube un CSV y revisas antes de meterlo.</p>
+          </div>
+          <div class="glass-card import-panel">
+            <input id="csvFile" type="file" accept=".csv,.txt" />
+            <textarea id="csvText" rows="7" placeholder="Pega aqui el CSV del banco..."></textarea>
+            <button class="primary" id="previewCsv" type="button">Previsualizar</button>
+          </div>
+          <div id="importPreview" class="movement-list"></div>
+        </section>
+
+        <section class="view page-view" id="settingsView">
+          <div class="screen-title">
+            <h2>Ajustes</h2>
+            <p>Presupuesto, ahorro, apariencia y copias.</p>
+          </div>
+          <section class="glass-card appearance-card">
+            <div class="section-title">
+              <h2>Apariencia</h2>
+              <span>Fondos tipo Revolut</span>
+            </div>
+            <div class="palette-grid" id="paletteGrid" aria-label="Paletas de color">
+              <button class="palette-option" data-accent="sunset" type="button">
+                <span class="swatch sunset"></span>
+                Sunset
+              </button>
+              <button class="palette-option" data-accent="candy" type="button">
+                <span class="swatch candy"></span>
+                Candy
+              </button>
+              <button class="palette-option" data-accent="aurora" type="button">
+                <span class="swatch aurora"></span>
+                Aurora
+              </button>
+              <button class="palette-option" data-accent="ocean" type="button">
+                <span class="swatch ocean"></span>
+                Ocean
+              </button>
+              <button class="palette-option" data-accent="graphite" type="button">
+                <span class="swatch graphite"></span>
+                Grafito
+              </button>
+            </div>
+          </section>
+          <form class="glass-card settings-card" id="settingsForm">
+            <label>
+              Presupuesto mensual
+              <input id="monthlyBudgetInput" inputmode="decimal" placeholder="900" />
+            </label>
+            <label>
+              Ahorro objetivo
+              <input id="savingGoalInput" inputmode="decimal" placeholder="200" />
+            </label>
+            <label>
+              Dia que empieza tu mes
+              <input id="cycleStartDayInput" inputmode="numeric" min="1" max="31" placeholder="27" />
+            </label>
+            <button class="primary" type="submit">Guardar ajustes</button>
+          </form>
+
+          <div class="settings-actions">
+            <button id="exportJson" type="button">Copia JSON</button>
+            <button id="exportCsv" type="button">Exportar CSV</button>
+            <button id="resetDemo" class="danger" type="button">Vaciar</button>
+          </div>
+
+          <details class="glass-card">
+            <summary>Automatizar con banco</summary>
+            <div class="details-copy">
+              <p>Wallet no deja leer tus pagos. La via realista es banco por PSD2/Open Banking con backend.</p>
+              <p>Mientras tanto, CSV + atajos rapidos es lo menos pesado para no abandonar la app a los tres dias.</p>
+            </div>
+          </details>
+        </section>
+      </main>
+
       <nav class="tabs" aria-label="Secciones">
         <button class="tab active" data-view="quick" type="button">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 20V9"></path>
             <path d="m3 11 9-8 9 8"></path>
-            <path d="M5 10v10h14V10"></path>
-            <path d="M10 20v-6h4v6"></path>
+            <path d="M19 20V9"></path>
           </svg>
           Inicio
         </button>
@@ -66,172 +291,6 @@
           Ajustes
         </button>
       </nav>
-
-      <main>
-        <section class="view active" id="quickView">
-          <section class="balance-card">
-            <div class="balance-head">
-              <label class="month-control" for="monthPicker">
-                Ciclo de
-                <input id="monthPicker" type="month" />
-              </label>
-              <div class="meter">
-                <svg viewBox="0 0 120 120" role="img" aria-label="Progreso del presupuesto">
-                  <circle class="meter-bg" cx="60" cy="60" r="48"></circle>
-                  <circle class="meter-bar" id="budgetRing" cx="60" cy="60" r="48"></circle>
-                </svg>
-                <strong id="budgetPercent">0%</strong>
-              </div>
-            </div>
-            <span class="period-label" id="periodLabel">Ciclo mensual</span>
-            <p id="balanceHint">Disponible este mes</p>
-            <h2 id="balanceLabel">0,00 €</h2>
-            <div class="mini-stats" aria-label="Resumen mensual">
-              <article>
-                <span>Ingresos</span>
-                <strong id="incomeStat">0,00 €</strong>
-              </article>
-              <article>
-                <span>Gastado</span>
-                <strong id="expenseStat">0,00 €</strong>
-              </article>
-              <article>
-                <span>Libre</span>
-                <strong id="availableStat">0,00 €</strong>
-              </article>
-            </div>
-          </section>
-
-          <section class="quick-add-card">
-            <div class="section-title">
-              <h2>Añadir rápido</h2>
-              <span>Sin drama</span>
-            </div>
-            <form class="entry-form" id="transactionForm">
-              <div class="amount-line">
-                <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="0,00" required />
-                <select id="typeInput" aria-label="Tipo">
-                  <option value="expense">Gasto</option>
-                  <option value="income">Ingreso</option>
-                </select>
-              </div>
-              <input id="merchantInput" autocomplete="off" placeholder="Concepto: Mercadona, gasolina..." required />
-              <div class="form-grid">
-                <select id="categoryInput" aria-label="Categoria"></select>
-                <input id="dateInput" type="date" required aria-label="Fecha" />
-              </div>
-              <input id="noteInput" autocomplete="off" placeholder="Nota opcional" />
-              <button class="primary" type="submit">Guardar</button>
-            </form>
-          </section>
-
-          <section class="quick-presets">
-            <div class="section-title">
-              <h2>Atajos</h2>
-              <span>Un toque y editas</span>
-            </div>
-            <div class="quick-grid" id="quickButtons" aria-label="Plantillas rapidas"></div>
-          </section>
-
-          <section class="recent-card">
-            <div class="section-title">
-              <h2>Últimos movimientos</h2>
-              <button class="text-link tab-jump" data-view="list" type="button">Ver todo</button>
-            </div>
-            <div class="movement-list compact" id="latestList"></div>
-          </section>
-        </section>
-
-        <section class="view" id="listView">
-          <div class="screen-title">
-            <h2>Movimientos</h2>
-            <p>Busca, filtra y borra lo que no toque.</p>
-          </div>
-          <div class="toolbar">
-            <input id="searchInput" type="search" placeholder="Buscar..." />
-            <select id="categoryFilter"></select>
-          </div>
-          <div class="category-bars" id="categoryBars"></div>
-          <div class="movement-list" id="movementList"></div>
-        </section>
-
-        <section class="view" id="importView">
-          <div class="screen-title">
-            <h2>Importar banco</h2>
-            <p>Pega o sube un CSV y revisas antes de meterlo.</p>
-          </div>
-          <div class="import-panel">
-            <input id="csvFile" type="file" accept=".csv,.txt" />
-            <textarea id="csvText" rows="7" placeholder="Pega aqui el CSV del banco..."></textarea>
-            <button class="primary" id="previewCsv" type="button">Previsualizar</button>
-          </div>
-          <div id="importPreview" class="movement-list"></div>
-        </section>
-
-        <section class="view" id="settingsView">
-          <div class="screen-title">
-            <h2>Ajustes</h2>
-            <p>Presupuesto, ahorro y copias.</p>
-          </div>
-          <section class="appearance-card">
-            <div class="section-title">
-              <h2>Apariencia</h2>
-              <span>Colores de la app</span>
-            </div>
-            <div class="palette-grid" id="paletteGrid" aria-label="Paletas de color">
-              <button class="palette-option" data-accent="ocean" type="button">
-                <span class="swatch ocean"></span>
-                Azul
-              </button>
-              <button class="palette-option" data-accent="violet" type="button">
-                <span class="swatch violet"></span>
-                Morado
-              </button>
-              <button class="palette-option" data-accent="rose" type="button">
-                <span class="swatch rose"></span>
-                Rosa
-              </button>
-              <button class="palette-option" data-accent="mint" type="button">
-                <span class="swatch mint"></span>
-                Verde
-              </button>
-              <button class="palette-option" data-accent="graphite" type="button">
-                <span class="swatch graphite"></span>
-                Grafito
-              </button>
-            </div>
-          </section>
-          <form class="settings-card" id="settingsForm">
-            <label>
-              Presupuesto mensual
-              <input id="monthlyBudgetInput" inputmode="decimal" placeholder="900" />
-            </label>
-            <label>
-              Ahorro objetivo
-              <input id="savingGoalInput" inputmode="decimal" placeholder="200" />
-            </label>
-            <label>
-              Dia que empieza tu mes
-              <input id="cycleStartDayInput" inputmode="numeric" min="1" max="31" placeholder="27" />
-            </label>
-            <button class="primary" type="submit">Guardar ajustes</button>
-          </form>
-
-          <div class="settings-actions">
-            <button id="exportJson" type="button">Copia JSON</button>
-            <button id="exportCsv" type="button">Exportar CSV</button>
-            <button id="resetDemo" class="danger" type="button">Vaciar</button>
-          </div>
-
-          <details>
-            <summary>Automatizar con banco</summary>
-            <div class="details-copy">
-              <p>Wallet no deja leer tus pagos. La via realista es banco por PSD2/Open Banking con backend.</p>
-              <p>Mientras tanto, CSV + atajos rapidos es lo menos pesado para no abandonar la app a los tres dias.</p>
-            </div>
-          </details>
-        </section>
-      </main>
     </div>
 
     <template id="movementTemplate">

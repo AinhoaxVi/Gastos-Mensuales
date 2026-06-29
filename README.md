@@ -8,6 +8,7 @@ PWA sencilla para controlar gastos sin depender de una app bancaria desde el min
 - Resumen mensual con ingresos, gastos, disponible y presupuesto.
 - Ciclo mensual configurable por dia de cobro, por defecto del 27 al 26.
 - Apariencia configurable con modo claro/oscuro y varias paletas de color.
+- Home visual tipo app bancaria moderna, con fondo degradado y acciones rapidas.
 - Categorias y barras por categoria.
 - Importacion CSV desde el banco con deteccion basica de fecha, concepto e importe.
 - Reglas automaticas para clasificar comercios comunes.

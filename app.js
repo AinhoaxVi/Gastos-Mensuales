@@ -40,7 +40,7 @@ const defaultState = {
     savingGoal: 200,
     cycleStartDay: 27,
     theme: "dark",
-    accent: "ocean",
+    accent: "sunset",
   },
   transactions: [],
 };
@@ -77,6 +77,8 @@ const els = {
   previewCsv: document.querySelector("#previewCsv"),
   importPreview: document.querySelector("#importPreview"),
   paletteGrid: document.querySelector("#paletteGrid"),
+  expenseAction: document.querySelector("#expenseAction"),
+  incomeAction: document.querySelector("#incomeAction"),
   settingsForm: document.querySelector("#settingsForm"),
   monthlyBudgetInput: document.querySelector("#monthlyBudgetInput"),
   savingGoalInput: document.querySelector("#savingGoalInput"),
@@ -124,11 +126,14 @@ function bindEvents() {
 
   document.querySelectorAll(".palette-option").forEach((button) => {
     button.addEventListener("click", () => {
-      state.settings.accent = button.dataset.accent || "ocean";
+      state.settings.accent = normalizeAccent(button.dataset.accent);
       applyAppearance();
       save();
     });
   });
+
+  els.expenseAction?.addEventListener("click", () => prepareQuickEntry("expense"));
+  els.incomeAction?.addEventListener("click", () => prepareQuickEntry("income"));
 
   els.monthPicker.addEventListener("change", render);
   els.searchInput.addEventListener("input", renderMovements);
@@ -202,17 +207,44 @@ function render() {
 
 function applyAppearance() {
   document.documentElement.dataset.theme = state.settings.theme || "dark";
-  document.documentElement.dataset.accent = state.settings.accent || "ocean";
+  state.settings.accent = normalizeAccent(state.settings.accent);
+  document.documentElement.dataset.accent = state.settings.accent;
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   if (metaTheme) {
-    metaTheme.setAttribute("content", state.settings.theme === "dark" ? "#070b12" : "#f4f6fb");
+    metaTheme.setAttribute("content", themeColorForAccent(state.settings.accent));
   }
 }
 
 function renderPalette() {
   document.querySelectorAll(".palette-option").forEach((button) => {
-    button.classList.toggle("active", button.dataset.accent === (state.settings.accent || "ocean"));
+    button.classList.toggle("active", button.dataset.accent === normalizeAccent(state.settings.accent));
   });
+}
+
+function prepareQuickEntry(type) {
+  switchView("quick");
+  els.typeInput.value = type;
+  els.amountInput.focus();
+}
+
+function normalizeAccent(accent) {
+  const aliases = {
+    rose: "sunset",
+    violet: "candy",
+    mint: "aurora",
+  };
+  const value = aliases[accent] || accent || "sunset";
+  return ["sunset", "candy", "aurora", "ocean", "graphite"].includes(value) ? value : "sunset";
+}
+
+function themeColorForAccent(accent) {
+  return {
+    sunset: "#f65d79",
+    candy: "#b75cef",
+    aurora: "#35bdf2",
+    ocean: "#2563eb",
+    graphite: "#334155",
+  }[normalizeAccent(accent)];
 }
 
 function renderSummary() {
