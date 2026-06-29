@@ -1,5 +1,30 @@
 const STORAGE_KEY = "gastos-ainhoa-v1";
 
+const memoryStorage = (() => {
+  const store = new Map();
+  return {
+    getItem(key) { return store.has(key) ? store.get(key) : null; },
+    setItem(key, value) { store.set(key, String(value)); },
+    removeItem(key) { store.delete(key); },
+  };
+})();
+
+const storage = (() => {
+  try {
+    const testKey = "__gastos_storage_test__";
+    globalThis.localStorage?.setItem(testKey, "1");
+    globalThis.localStorage?.removeItem(testKey);
+    return globalThis.localStorage || memoryStorage;
+  } catch {
+    return memoryStorage;
+  }
+})();
+
+function makeId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 const categories = [
   "Comida",
   "Coche",
@@ -213,6 +238,7 @@ function applyAppearance() {
   if (metaTheme) {
     metaTheme.setAttribute("content", themeColorForAccent(state.settings.accent));
   }
+  renderPalette();
 }
 
 function renderPalette() {
@@ -391,7 +417,7 @@ function previewImport() {
   });
   els.importPreview.append(action);
 
-  pendingImport.slice(0, 12).forEach((tx) => els.importPreview.append(movementNode({ ...tx, id: `preview-${crypto.randomUUID()}` })));
+  pendingImport.slice(0, 12).forEach((tx) => els.importPreview.append(movementNode({ ...tx, id: `preview-${makeId()}` })));
 }
 
 function parseCsvTransactions(csv) {
@@ -465,7 +491,7 @@ function detectIndexes(header) {
 
 function addTransaction(tx) {
   state.transactions.push({
-    id: tx.id || crypto.randomUUID(),
+    id: tx.id || makeId(),
     type: tx.type || "expense",
     amount: Number(tx.amount),
     merchant: tx.merchant || "Movimiento",
@@ -565,7 +591,7 @@ function fillSelect(select, values) {
 
 function loadState() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const saved = JSON.parse(storage.getItem(STORAGE_KEY));
     if (!saved) return defaultState;
     return {
       ...defaultState,
@@ -579,7 +605,7 @@ function loadState() {
 }
 
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try { storage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
 }
 
 function currentMonth() {

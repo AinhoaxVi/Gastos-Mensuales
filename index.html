@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#ff7a66" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -10,10 +10,10 @@
     <title>Gastos Mensuales</title>
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=7" />
-    <link rel="stylesheet" href="./fixes.css?v=7" />
+    <link rel="stylesheet" href="./styles.css?v=8" />
+    <link rel="stylesheet" href="./fixes.css?v=8" />
   </head>
-  <body>
+  <body class="app-body">
     <div class="app-shell">
       <header class="topbar">
         <button class="avatar-button" type="button" aria-label="Perfil">AX</button>
@@ -24,7 +24,7 @@
           </svg>
           Buscar
         </button>
-        <button class="top-action tab-jump" data-view="list" type="button" aria-label="Ver resumen">
+        <button class="top-action tab-jump" id="summaryAction" data-view="list" type="button" aria-label="Ver resumen">
           <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M5 20V10"></path>
             <path d="M12 20V4"></path>
@@ -311,7 +311,7 @@
       </article>
     </template>
 
-    <script src="./app.js?v=7" type="module"></script>
-    <script src="./fixes.js?v=7" type="module"></script>
+    <script src="./app.js?v=8" type="module"></script>
+    <script src="./fixes.js?v=8" type="module"></script>
   </body>
 </html>

@@ -6,7 +6,7 @@ const paletteChrome = {
   graphite: "#64748b",
 };
 
-const labels = {
+const accentLabels = {
   sunset: "Sunset",
   candy: "Candy",
   aurora: "Aurora",
@@ -14,15 +14,18 @@ const labels = {
   graphite: "Grafito",
 };
 
-const STORAGE_KEY = "gastos-ainhoa-v1";
-let toastTimer;
+const LOCAL_KEY = "gastos-ainhoa-v1";
+let toastTimer = null;
+let lastTouchEnd = 0;
 
 initPolish();
 
 function initPolish() {
   ensureToast();
   syncChrome();
-  bindPolishButtons();
+  bindNavigationPolish();
+  bindActionPolish();
+  bindNoZoomGuards();
 
   new MutationObserver(syncChrome).observe(document.documentElement, {
     attributes: true,
@@ -34,49 +37,125 @@ function initPolish() {
   }
 }
 
-function bindPolishButtons() {
-  document.querySelector(".avatar-button")?.addEventListener("click", () => switchTo("settings", { top: true }));
+function bindNavigationPolish() {
+  document.querySelectorAll(".tab, .tab-jump").forEach((button) => {
+    button.addEventListener("click", () => {
+      window.setTimeout(() => {
+        document.activeElement?.blur?.();
+      }, 20);
+    });
+  });
+
+  document.querySelector(".avatar-button")?.addEventListener("click", () => {
+    switchTo("settings", { top: true });
+  });
 
   document.querySelector(".search-pill")?.addEventListener("click", () => {
-    switchTo("list", { top: true });
-    window.setTimeout(() => document.querySelector("#searchInput")?.focus(), 180);
+    switchTo("list", { top: true, focus: "#searchInput" });
   });
 
-  document.querySelector(".top-action")?.addEventListener("click", () => {
+  document.querySelector("#summaryAction")?.addEventListener("click", () => {
     switchTo("quick", { top: true });
-    window.setTimeout(() => document.querySelector(".progress-card")?.scrollIntoView({ behavior: "smooth", block: "center" }), 220);
+    window.setTimeout(() => {
+      document.querySelector(".progress-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+  });
+}
+
+function bindActionPolish() {
+  document.querySelector("#expenseAction")?.addEventListener("click", () => {
+    showToast("Añadir gasto");
+    scrollToEntry("expense");
   });
 
-  document.querySelector("#expenseAction")?.addEventListener("click", () => scrollEntry("Gasto listo"));
-  document.querySelector("#incomeAction")?.addEventListener("click", () => scrollEntry("Ingreso listo"));
+  document.querySelector("#incomeAction")?.addEventListener("click", () => {
+    showToast("Añadir ingreso");
+    scrollToEntry("income");
+  });
 
   document.querySelector("#paletteGrid")?.addEventListener("click", (event) => {
     const button = event.target.closest(".palette-option");
     if (!button) return;
     window.setTimeout(() => {
       syncChrome();
-      showToast(`Fondo ${labels[currentAccent()] || "cambiado"}`);
+      const active = document.documentElement.dataset.accent || currentAccent();
+      showToast(`Fondo ${accentLabels[active] || "actualizado"}`);
     }, 40);
   });
 
-  document.querySelector("#settingsForm")?.addEventListener("submit", () => window.setTimeout(() => showToast("Ajustes guardados"), 40));
-  document.querySelector("#exportJson")?.addEventListener("click", () => showToast("Copia JSON descargada"));
+  document.querySelector("#settingsForm")?.addEventListener("submit", () => {
+    window.setTimeout(() => showToast("Ajustes guardados"), 30);
+  });
+
+  document.querySelector("#exportJson")?.addEventListener("click", () => showToast("JSON descargado"));
   document.querySelector("#exportCsv")?.addEventListener("click", () => showToast("CSV descargado"));
-  document.querySelector("#resetDemo")?.addEventListener("click", () => window.setTimeout(() => showToast("Movimientos vaciados"), 80));
+  document.querySelector("#previewCsv")?.addEventListener("click", () => {
+    window.setTimeout(() => {
+      const importButton = [...document.querySelectorAll("#importPreview .primary")][0];
+      if (importButton) showToast("Previsualización lista");
+    }, 80);
+  });
+
+  document.querySelector("#resetDemo")?.addEventListener("click", () => {
+    window.setTimeout(() => showToast("Movimientos vaciados"), 100);
+  });
+
+  document.querySelector("#transactionForm")?.addEventListener("submit", () => {
+    window.setTimeout(() => {
+      document.querySelector("#merchantInput")?.blur();
+      document.querySelector("#noteInput")?.blur();
+      showToast("Movimiento guardado");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 60);
+  });
+}
+
+function bindNoZoomGuards() {
+  document.addEventListener("gesturestart", (event) => event.preventDefault(), { passive: false });
+  document.addEventListener("gesturechange", (event) => event.preventDefault(), { passive: false });
+  document.addEventListener("gestureend", (event) => event.preventDefault(), { passive: false });
+
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      if (event.scale && event.scale !== 1) event.preventDefault();
+    },
+    { passive: false },
+  );
+
+  document.addEventListener(
+    "touchend",
+    (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 280) event.preventDefault();
+      lastTouchEnd = now;
+    },
+    { passive: false },
+  );
 }
 
 function switchTo(view, options = {}) {
   const navButton = document.querySelector(`.tab[data-view="${view}"]`);
   if (navButton) navButton.click();
-  if (options.top) window.scrollTo({ top: 0, behavior: "smooth" });
+  if (options.top) {
+    window.setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 20);
+  }
+  if (options.focus) {
+    window.setTimeout(() => {
+      const target = document.querySelector(options.focus);
+      target?.focus();
+      if (target?.select) target.select();
+    }, 220);
+  }
 }
 
-function scrollEntry(message) {
+function scrollToEntry(type) {
+  const typeSelect = document.querySelector("#typeInput");
+  if (typeSelect) typeSelect.value = type;
   window.setTimeout(() => {
-    document.querySelector(".quick-add-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    document.querySelector("#amountInput")?.focus();
-    showToast(message);
-  }, 180);
+    document.querySelector(".quick-add-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => document.querySelector("#amountInput")?.focus(), 240);
+  }, 100);
 }
 
 function currentAccent() {
@@ -84,7 +163,7 @@ function currentAccent() {
   if (paletteChrome[rootAccent]) return rootAccent;
 
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}");
     return paletteChrome[saved?.settings?.accent] ? saved.settings.accent : "sunset";
   } catch {
     return "sunset";
@@ -114,5 +193,5 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add("show");
   window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => toast.classList.remove("show"), 1400);
+  toastTimer = window.setTimeout(() => toast.classList.remove("show"), 1500);
 }

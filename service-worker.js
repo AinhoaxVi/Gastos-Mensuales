@@ -1,11 +1,11 @@
-const CACHE_NAME = "gastos-mensuales-v7";
+const CACHE_NAME = "gastos-mensuales-v8";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=7",
-  "./fixes.css?v=7",
-  "./app.js?v=7",
-  "./fixes.js?v=7",
+  "./styles.css?v=8",
+  "./fixes.css?v=8",
+  "./app.js?v=8",
+  "./fixes.js?v=8",
   "./manifest.json",
   "./assets/icon.svg",
 ];
