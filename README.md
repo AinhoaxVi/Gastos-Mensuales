@@ -34,7 +34,7 @@ La app empieza con entrada rápida e importación CSV. La integración bancaria 
 
 Apple Wallet no expone a una app web normal el historial de pagos de tus tarjetas. Para detectar movimientos automáticamente, la vía realista es el banco.
 
-## v11
+## v12
 
 - Rediseño visual completo con CSS unificado en `styles.css`.
 - Eliminados los parches visuales de `fixes.css` y `fixes.js`.
@@ -44,5 +44,5 @@ Apple Wallet no expone a una app web normal el historial de pagos de tus tarjeta
 - Mejorada la importación de CSV con importación por lotes, no render por cada movimiento.
 - Añadida edición de movimientos.
 - Fechas locales, sin `toISOString()` para evitar saltos raros por UTC.
-- Manifest y service worker actualizados a v11.
+- Manifest y service worker actualizados a v12.
 - Añadidos iconos PNG para PWA/iPhone.

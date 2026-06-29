@@ -2,11 +2,11 @@
   "name": "Gastos Mensuales",
   "short_name": "Gastos",
   "description": "Control de gastos personal con entrada rápida, presupuesto, ciclo de nómina e importación CSV.",
-  "start_url": "./index.html?v=11",
+  "start_url": "./index.html?v=12",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#a33e6d",
-  "theme_color": "#a33e6d",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "./assets/icon.svg",

@@ -311,7 +311,8 @@ function applyAppearance() {
   const color = themeColorForAccent(state.settings.accent, state.settings.theme);
   document.documentElement.style.backgroundColor = color;
   document.body.style.backgroundColor = color;
-  document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", color));
+  const themeChrome = state.settings.theme === "dark" ? "#000000" : "#ffffff";
+  document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", themeChrome));
   renderPalette();
 }
 
