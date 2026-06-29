@@ -1,19 +1,23 @@
 # Gastos Mensuales
 
-PWA sencilla para controlar gastos sin depender de una app bancaria desde el minuto uno.
+PWA para controlar gastos con ciclo de nómina, entrada rápida, edición de movimientos, importación CSV y estética tipo app bancaria moderna.
 
-## Que hace
+## Qué hace
 
-- Entrada rapida de gastos e ingresos.
-- Resumen mensual con ingresos, gastos, disponible y presupuesto.
-- Ciclo mensual configurable por dia de cobro, por defecto del 27 al 26.
-- Apariencia configurable con modo claro/oscuro y paletas que actualizan también el color de ventana en iOS.
-- Home visual tipo app bancaria moderna, con degradado a pantalla completa, acciones rápidas y barra inferior pulida.
-- Categorias y barras por categoria.
-- Importacion CSV desde el banco con deteccion basica de fecha, concepto e importe.
-- Reglas automaticas para clasificar comercios comunes.
-- Exportacion JSON y CSV.
-- Funciona en local con `localStorage` y se puede instalar como PWA.
+- Entrada rápida de gastos e ingresos.
+- Resumen por ciclo mensual, por defecto del 27 al 26.
+- Presupuesto mensual, ahorro objetivo, gastado, ingresos y disponible.
+- Edición y borrado de movimientos.
+- Historial con búsqueda y filtro por categoría.
+- Barras de gasto por categoría.
+- Atajos para gastos repetidos.
+- Importación CSV con detección de fecha, concepto, importe, cargo y abono.
+- Detección y omisión de duplicados obvios.
+- Marcado de movimientos dudosos como “revisar”.
+- Modo claro/oscuro real y paletas configurables.
+- Iconos PWA en SVG, 192, 512 y Apple Touch Icon.
+- Exportación JSON y CSV.
+- Datos guardados en `localStorage`.
 
 ## Ejecutar
 
@@ -22,21 +26,23 @@ npm install
 npm run start
 ```
 
-Tambien se puede abrir `index.html` directamente, aunque para PWA/service worker es mejor servirlo por HTTP.
+También se puede abrir `index.html` directamente, aunque para PWA/service worker es mejor servirlo por HTTP.
 
 ## Sobre banco y Wallet
 
-La app esta pensada para empezar con entrada rapida e importacion CSV. La integracion bancaria real iria en una segunda fase con backend y un proveedor PSD2/Open Banking.
+La app empieza con entrada rápida e importación CSV. La integración bancaria real requiere backend y autorización bancaria mediante PSD2/Open Banking.
 
-Apple Wallet no expone a una app normal el historial de pagos de tus tarjetas. La via realista para detectar movimientos es el banco, no Wallet.
+Apple Wallet no expone a una app web normal el historial de pagos de tus tarjetas. Para detectar movimientos automáticamente, la vía realista es el banco.
 
-## Notas de uso en iPhone
+## v10
 
-Para que el degradado ocupe toda la pantalla como app real, abre la web y añádela a inicio. En Safari normal la barra del navegador puede seguir apareciendo porque iOS decide hacer de iOS.
-
-## Siguiente fase recomendada
-
-1. Backend pequeño para guardar datos y usuarios.
-2. Integracion con proveedor Open Banking europeo.
-3. Reglas de conciliacion para evitar duplicados.
-4. Avisos para revisar movimientos importados.
+- Rediseño visual completo con CSS unificado en `styles.css`.
+- Eliminados los parches visuales de `fixes.css` y `fixes.js`.
+- Modo claro y oscuro con contraste real.
+- Barra de navegación adaptada: inferior en móvil y lateral en escritorio.
+- Corregida la importación CSV con columnas separadas de `Cargo` y `Abono`.
+- Mejorada la importación de CSV con importación por lotes, no render por cada movimiento.
+- Añadida edición de movimientos.
+- Fechas locales, sin `toISOString()` para evitar saltos raros por UTC.
+- Manifest y service worker actualizados a v10.
+- Añadidos iconos PNG para PWA/iPhone.

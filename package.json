@@ -1,8 +1,8 @@
 {
   "name": "gastos-mensuales",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "PWA de control de gastos con entrada rapida e importacion CSV.",
+  "description": "PWA de control de gastos con estética pulida, edición e importación CSV robusta.",
   "scripts": {
     "start": "npx serve .",
     "check": "node ./scripts/check.mjs"

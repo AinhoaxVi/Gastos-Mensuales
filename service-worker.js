@@ -1,13 +1,14 @@
-const CACHE_NAME = "gastos-mensuales-v8";
+const CACHE_NAME = "gastos-mensuales-v10";
 const ASSETS = [
   "./",
-  "./index.html",
-  "./styles.css?v=8",
-  "./fixes.css?v=8",
-  "./app.js?v=8",
-  "./fixes.js?v=8",
+  "./index.html?v=10",
+  "./styles.css?v=10",
+  "./app.js?v=10",
   "./manifest.json",
   "./assets/icon.svg",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
+  "./assets/apple-touch-icon.png",
 ];
 
 self.addEventListener("install", (event) => {
@@ -33,6 +34,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return response;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html"))),
+      .catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html?v=10") || caches.match("./"))),
   );
 });
