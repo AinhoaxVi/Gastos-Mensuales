@@ -284,6 +284,35 @@ function bindEvents() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !els.editSheet.hidden) closeEditor();
   });
+  installScrollBoundaryGuard();
+}
+
+
+function installScrollBoundaryGuard() {
+  let startY = 0;
+  const scrollRoot = () => document.scrollingElement || document.documentElement;
+
+  document.addEventListener("touchstart", (event) => {
+    if (!event.touches.length) return;
+    startY = event.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener("touchmove", (event) => {
+    if (!event.touches.length) return;
+    const target = event.target;
+    if (target?.closest?.("textarea, input, select, .edit-sheet")) return;
+
+    const root = scrollRoot();
+    const currentY = event.touches[0].clientY;
+    const fingerMovesDown = currentY > startY;
+    const fingerMovesUp = currentY < startY;
+    const atTop = root.scrollTop <= 0;
+    const atBottom = Math.ceil(root.scrollTop + window.innerHeight) >= root.scrollHeight;
+
+    if ((atTop && fingerMovesDown) || (atBottom && fingerMovesUp)) {
+      event.preventDefault();
+    }
+  }, { passive: false });
 }
 
 function switchView(view, options = {}) {
@@ -308,10 +337,9 @@ function applyAppearance() {
   state.settings.accent = normalizeAccent(state.settings.accent);
   document.documentElement.dataset.theme = state.settings.theme;
   document.documentElement.dataset.accent = state.settings.accent;
-  const color = themeColorForAccent(state.settings.accent, state.settings.theme);
-  document.documentElement.style.backgroundColor = color;
-  document.body.style.backgroundColor = color;
-  const themeChrome = state.settings.theme === "dark" ? "#000000" : "#ffffff";
+  const themeChrome = state.settings.theme === "dark" ? "#26132d" : "#ff8f86";
+  document.documentElement.style.backgroundColor = "";
+  document.body.style.backgroundColor = "";
   document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.setAttribute("content", themeChrome));
   renderPalette();
 }

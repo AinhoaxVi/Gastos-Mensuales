@@ -65,17 +65,18 @@
 * { box-sizing: border-box; }
 
 html {
-  height: 100%;
   min-height: 100%;
-  background: linear-gradient(160deg, var(--bg-a) 0%, color-mix(in srgb, var(--bg-a) 50%, var(--bg-b) 50%) 38%, color-mix(in srgb, var(--bg-b) 68%, var(--bg-c) 32%) 72%, color-mix(in srgb, var(--bg-b) 44%, var(--bg-c) 56%) 100%);
+  background:
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--bg-a) 76%, white 24%) 0 7rem, transparent 19rem),
+    radial-gradient(circle at 86% 14%, color-mix(in srgb, var(--bg-b) 72%, white 18%) 0 9rem, transparent 22rem),
+    linear-gradient(160deg, color-mix(in srgb, var(--bg-a) 82%, white 18%) 0%, color-mix(in srgb, var(--bg-a) 44%, var(--bg-b) 56%) 34%, color-mix(in srgb, var(--bg-b) 72%, var(--bg-c) 28%) 72%, color-mix(in srgb, var(--bg-b) 56%, var(--bg-c) 44%) 100%);
+  background-attachment: fixed;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 body {
-  height: 100%;
   min-height: 100svh;
   padding-top: 0;
   margin: 0;
@@ -86,8 +87,8 @@ body {
     radial-gradient(circle at 52% 48%, rgba(255,255,255,0.10), transparent 28rem),
     linear-gradient(160deg, color-mix(in srgb, var(--bg-a) 82%, white 18%) 0%, color-mix(in srgb, var(--bg-a) 44%, var(--bg-b) 56%) 34%, color-mix(in srgb, var(--bg-b) 72%, var(--bg-c) 28%) 72%, color-mix(in srgb, var(--bg-b) 56%, var(--bg-c) 44%) 100%);
   background-attachment: fixed;
-  overflow: hidden;
-  overscroll-behavior: none;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 body::before,
@@ -135,23 +136,9 @@ p {
 
 .app-shell {
   width: min(1160px, 100%);
-  height: 100svh;
   min-height: 100svh;
   margin: 0 auto;
-  padding: calc(env(safe-area-inset-top) + 14px) 16px 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-main {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(124px + env(safe-area-inset-bottom));
+  padding: calc(env(safe-area-inset-top) + 14px) 16px calc(116px + env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -1111,10 +1098,7 @@ textarea {
 @media (min-width: 960px) {
   .app-shell {
     padding-inline: 24px;
-  }
-
-  main {
-    padding-bottom: 132px;
+    padding-bottom: 122px;
   }
 
   #quickView.active {
@@ -1253,5 +1237,14 @@ textarea {
 
   .movement-actions {
     flex-wrap: wrap;
+  }
+}
+
+
+body::selection { background: color-mix(in srgb, var(--accent) 42%, transparent); }
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
