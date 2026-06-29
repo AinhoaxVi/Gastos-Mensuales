@@ -1,0 +1,13 @@
+{
+  "name": "gastos-ainhoa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PWA de control de gastos con entrada rapida e importacion CSV.",
+  "scripts": {
+    "start": "npx serve .",
+    "check": "node ./scripts/check.mjs"
+  },
+  "devDependencies": {
+    "serve": "^14.2.5"
+  }
+}

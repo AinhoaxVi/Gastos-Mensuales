@@ -1,0 +1,18 @@
+{
+  "name": "Gastos Ainhoa",
+  "short_name": "Gastos",
+  "description": "Control de gastos personal con entrada rapida, presupuestos e importacion CSV.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090e18",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

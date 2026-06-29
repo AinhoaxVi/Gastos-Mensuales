@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#111827" />
+    <title>Gastos Ainhoa</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Control mensual</p>
+          <h1>Gastos Ainhoa</h1>
+        </div>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+      </header>
+
+      <main>
+        <section class="hero-panel">
+          <div class="hero-copy">
+            <label for="monthPicker">Mes</label>
+            <input id="monthPicker" type="month" />
+            <h2 id="balanceLabel">0,00 €</h2>
+            <p id="balanceHint">Balance del mes</p>
+          </div>
+          <div class="meter">
+            <svg viewBox="0 0 120 120" role="img" aria-label="Progreso del presupuesto">
+              <circle class="meter-bg" cx="60" cy="60" r="48"></circle>
+              <circle class="meter-bar" id="budgetRing" cx="60" cy="60" r="48"></circle>
+            </svg>
+            <strong id="budgetPercent">0%</strong>
+            <span>gastado</span>
+          </div>
+        </section>
+
+        <section class="stat-grid" aria-label="Resumen">
+          <article>
+            <span>Ingresos</span>
+            <strong id="incomeStat">0,00 €</strong>
+          </article>
+          <article>
+            <span>Gastos</span>
+            <strong id="expenseStat">0,00 €</strong>
+          </article>
+          <article>
+            <span>Disponible</span>
+            <strong id="availableStat">0,00 €</strong>
+          </article>
+        </section>
+
+        <nav class="tabs" aria-label="Secciones">
+          <button class="tab active" data-view="quick">Añadir</button>
+          <button class="tab" data-view="list">Movimientos</button>
+          <button class="tab" data-view="import">Importar</button>
+          <button class="tab" data-view="settings">Ajustes</button>
+        </nav>
+
+        <section class="view active" id="quickView">
+          <form class="entry-form" id="transactionForm">
+            <div class="amount-row">
+              <label>
+                Importe
+                <input id="amountInput" inputmode="decimal" autocomplete="off" placeholder="12,50" required />
+              </label>
+              <label>
+                Tipo
+                <select id="typeInput">
+                  <option value="expense">Gasto</option>
+                  <option value="income">Ingreso</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Comercio o concepto
+              <input id="merchantInput" autocomplete="off" placeholder="Mercadona, gasolina, alquiler..." required />
+            </label>
+            <div class="amount-row">
+              <label>
+                Categoria
+                <select id="categoryInput"></select>
+              </label>
+              <label>
+                Fecha
+                <input id="dateInput" type="date" required />
+              </label>
+            </div>
+            <label>
+              Nota
+              <input id="noteInput" autocomplete="off" placeholder="Opcional" />
+            </label>
+            <button class="primary" type="submit">Guardar movimiento</button>
+          </form>
+
+          <div class="quick-grid" id="quickButtons" aria-label="Plantillas rapidas"></div>
+        </section>
+
+        <section class="view" id="listView">
+          <div class="toolbar">
+            <input id="searchInput" type="search" placeholder="Buscar movimiento..." />
+            <select id="categoryFilter"></select>
+          </div>
+          <div class="category-bars" id="categoryBars"></div>
+          <div class="movement-list" id="movementList"></div>
+        </section>
+
+        <section class="view" id="importView">
+          <div class="import-panel">
+            <h3>Importar CSV del banco</h3>
+            <p>
+              Exportas movimientos desde la web/app del banco, lo sueltas aqui y la app intenta detectar
+              fecha, concepto e importe. Luego categoriza por reglas.
+            </p>
+            <input id="csvFile" type="file" accept=".csv,.txt" />
+            <textarea id="csvText" rows="7" placeholder="O pega aqui el CSV..."></textarea>
+            <button class="primary" id="previewCsv" type="button">Previsualizar importacion</button>
+          </div>
+          <div id="importPreview" class="movement-list"></div>
+        </section>
+
+        <section class="view" id="settingsView">
+          <form class="entry-form" id="settingsForm">
+            <label>
+              Presupuesto mensual de gasto
+              <input id="monthlyBudgetInput" inputmode="decimal" placeholder="900" />
+            </label>
+            <label>
+              Objetivo de ahorro mensual
+              <input id="savingGoalInput" inputmode="decimal" placeholder="200" />
+            </label>
+            <button class="primary" type="submit">Guardar ajustes</button>
+          </form>
+
+          <div class="settings-actions">
+            <button id="exportJson" type="button">Exportar copia</button>
+            <button id="exportCsv" type="button">Exportar CSV</button>
+            <button id="resetDemo" class="danger" type="button">Vaciar datos</button>
+          </div>
+
+          <details>
+            <summary>Que se puede automatizar de verdad</summary>
+            <div class="details-copy">
+              <p><strong>Wallet:</strong> iPhone no deja leer el historial de pagos de tus tarjetas desde una app normal.</p>
+              <p><strong>Banco:</strong> se puede por PSD2/Open Banking con proveedor tipo Tink o Enable Banking, pero necesita backend, consentimiento y puede traer retrasos.</p>
+              <p><strong>Pragmatico:</strong> importacion CSV + reglas + entrada rapida. Es lo que menos pelea da para empezar.</p>
+            </div>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <template id="movementTemplate">
+      <article class="movement">
+        <div class="movement-main">
+          <strong class="movement-title"></strong>
+          <span class="movement-meta"></span>
+        </div>
+        <div class="movement-side">
+          <strong class="movement-amount"></strong>
+          <button class="text-button movement-delete" type="button">Eliminar</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

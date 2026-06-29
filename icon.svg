@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Gastos Ainhoa">
+  <rect width="512" height="512" rx="112" fill="#111827"/>
+  <path d="M150 170c0-39 32-70 73-70h66c41 0 73 31 73 70v172c0 39-32 70-73 70h-66c-41 0-73-31-73-70V170Z" fill="#2563eb"/>
+  <path d="M198 174h116M198 228h116M198 282h74" stroke="#fff" stroke-width="28" stroke-linecap="round"/>
+  <path d="M312 326c0 31-25 56-56 56s-56-25-56-56 25-56 56-56 56 25 56 56Z" fill="#10b981"/>
+  <path d="M256 298v56M228 326h56" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+</svg>
