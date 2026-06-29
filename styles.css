@@ -8,10 +8,15 @@
   --line: #d9e0ec;
   --brand: #2563eb;
   --brand-dark: #173d96;
+  --hero-a: #0f172a;
+  --hero-b: #2563eb;
+  --hero-c: #0f766e;
+  --top-tint: rgba(37, 99, 235, 0.13);
   --good: #059669;
   --bad: #dc2626;
   --chip: #e8eef8;
   --shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --soft-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
   --radius: 8px;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -27,10 +32,51 @@
   --line: #253044;
   --brand: #60a5fa;
   --brand-dark: #1d4ed8;
+  --hero-a: #08111f;
+  --hero-b: #1d4ed8;
+  --hero-c: #0f766e;
+  --top-tint: rgba(96, 165, 250, 0.12);
   --good: #34d399;
   --bad: #fb7185;
   --chip: #1d293b;
   --shadow: 0 20px 55px rgba(0, 0, 0, 0.34);
+  --soft-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-accent="violet"] {
+  --brand: #7c3aed;
+  --brand-dark: #4c1d95;
+  --hero-a: #17112b;
+  --hero-b: #7c3aed;
+  --hero-c: #db2777;
+  --top-tint: rgba(124, 58, 237, 0.13);
+}
+
+:root[data-accent="rose"] {
+  --brand: #e11d48;
+  --brand-dark: #9f1239;
+  --hero-a: #24101a;
+  --hero-b: #e11d48;
+  --hero-c: #f97316;
+  --top-tint: rgba(225, 29, 72, 0.12);
+}
+
+:root[data-accent="mint"] {
+  --brand: #059669;
+  --brand-dark: #065f46;
+  --hero-a: #08251e;
+  --hero-b: #059669;
+  --hero-c: #2563eb;
+  --top-tint: rgba(5, 150, 105, 0.13);
+}
+
+:root[data-accent="graphite"] {
+  --brand: #334155;
+  --brand-dark: #0f172a;
+  --hero-a: #020617;
+  --hero-b: #334155;
+  --hero-c: #64748b;
+  --top-tint: rgba(51, 65, 85, 0.12);
 }
 
 * {
@@ -47,8 +93,8 @@ body {
   margin: 0;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 28rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 18rem),
+    radial-gradient(circle at 16% -10%, var(--top-tint), transparent 26rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 56%, transparent), transparent 18rem),
     var(--bg);
 }
 
@@ -72,7 +118,7 @@ p {
 .app-shell {
   width: min(1120px, 100%);
   margin: 0 auto;
-  padding: max(18px, env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom));
+  padding: calc(max(10px, env(safe-area-inset-top)) + 6px) 16px calc(92px + env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -80,7 +126,8 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  padding: 4px 0 2px;
 }
 
 .eyebrow {
@@ -95,7 +142,7 @@ p {
 
 h1 {
   margin-bottom: 0;
-  font-size: clamp(1.7rem, 4vw, 2.35rem);
+  font-size: clamp(1.55rem, 4vw, 2.2rem);
   letter-spacing: -0.02em;
 }
 
@@ -108,7 +155,18 @@ h1 {
   border-radius: var(--radius);
   color: var(--text);
   background: color-mix(in srgb, var(--surface) 92%, transparent);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--soft-shadow);
+}
+
+.ui-icon,
+.nav-icon {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .view {
@@ -135,6 +193,7 @@ h1 {
 .quick-presets,
 .recent-card,
 .import-panel,
+.appearance-card,
 .settings-card,
 details {
   border: 1px solid var(--line);
@@ -145,12 +204,12 @@ details {
 
 .balance-card {
   grid-row: span 2;
-  min-height: 430px;
-  padding: 20px;
+  min-height: 390px;
+  padding: 18px;
   color: #ffffff;
   background:
-    radial-gradient(circle at 88% 12%, rgba(96, 165, 250, 0.62), transparent 11rem),
-    linear-gradient(135deg, #0f172a, #1d4ed8 55%, #0f766e);
+    radial-gradient(circle at 88% 10%, rgba(255, 255, 255, 0.22), transparent 10rem),
+    linear-gradient(135deg, var(--hero-a), var(--hero-b) 58%, var(--hero-c));
   border-color: rgba(255, 255, 255, 0.18);
 }
 
@@ -190,7 +249,7 @@ details {
 
 .period-label {
   display: inline-flex;
-  margin-top: 54px;
+  margin-top: 32px;
   padding: 7px 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
@@ -201,8 +260,8 @@ details {
 }
 
 .balance-card h2 {
-  margin-bottom: 22px;
-  font-size: clamp(3.1rem, 9vw, 5.6rem);
+  margin-bottom: 18px;
+  font-size: clamp(2.7rem, 9vw, 5rem);
   line-height: 0.92;
   letter-spacing: -0.06em;
 }
@@ -307,6 +366,7 @@ details {
 .quick-presets,
 .recent-card,
 .import-panel,
+.appearance-card,
 .settings-card {
   padding: 16px;
 }
@@ -365,6 +425,57 @@ textarea {
   background: linear-gradient(135deg, var(--brand), var(--brand-dark));
   font-weight: 900;
   box-shadow: 0 14px 26px color-mix(in srgb, var(--brand) 28%, transparent);
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.palette-option {
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  min-height: 72px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--surface);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.palette-option.active {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.swatch.ocean {
+  background: linear-gradient(135deg, #2563eb, #0f766e);
+}
+
+.swatch.violet {
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+}
+
+.swatch.rose {
+  background: linear-gradient(135deg, #e11d48, #f97316);
+}
+
+.swatch.mint {
+  background: linear-gradient(135deg, #059669, #2563eb);
+}
+
+.swatch.graphite {
+  background: linear-gradient(135deg, #0f172a, #64748b);
 }
 
 .quick-grid {
@@ -574,13 +685,13 @@ summary {
   z-index: 10;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  width: min(520px, calc(100% - 24px));
-  padding: 8px;
+  gap: 4px;
+  width: min(500px, calc(100% - 24px));
+  padding: 6px;
   border: 1px solid var(--line);
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
   transform: translateX(-50%);
   backdrop-filter: blur(18px);
 }
@@ -588,24 +699,21 @@ summary {
 .tab {
   display: grid;
   place-items: center;
-  gap: 3px;
-  min-height: 54px;
+  gap: 4px;
+  min-height: 52px;
   border: 0;
-  border-radius: 13px;
+  border-radius: 17px;
   color: var(--muted);
   background: transparent;
   font-size: 0.78rem;
   font-weight: 850;
-}
-
-.tab span {
-  font-size: 1.05rem;
-  line-height: 1;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .tab.active {
   color: #ffffff;
-  background: var(--brand);
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--brand) 26%, transparent);
 }
 
 @media (min-width: 900px) {
@@ -642,19 +750,35 @@ summary {
   }
 
   .period-label {
-    margin-top: 34px;
+    margin-top: 26px;
   }
 
   .balance-card h2 {
-    font-size: clamp(2.8rem, 15vw, 4.4rem);
+    font-size: clamp(2.45rem, 14vw, 4.1rem);
   }
 
-  .mini-stats,
   .amount-line,
   .form-grid,
   .toolbar,
   .settings-actions {
     grid-template-columns: 1fr;
+  }
+
+  .mini-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mini-stats article {
+    min-height: 72px;
+    padding: 10px;
+  }
+
+  .mini-stats strong {
+    font-size: 0.95rem;
+  }
+
+  .palette-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .quick-grid {

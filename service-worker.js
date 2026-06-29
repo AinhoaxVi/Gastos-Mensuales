@@ -1,4 +1,4 @@
-const CACHE_NAME = "gastos-ainhoa-v1";
+const CACHE_NAME = "gastos-mensuales-v4";
 const ASSETS = [
   "./",
   "./index.html",

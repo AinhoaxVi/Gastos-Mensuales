@@ -40,6 +40,7 @@ const defaultState = {
     savingGoal: 200,
     cycleStartDay: 27,
     theme: "dark",
+    accent: "ocean",
   },
   transactions: [],
 };
@@ -75,6 +76,7 @@ const els = {
   csvText: document.querySelector("#csvText"),
   previewCsv: document.querySelector("#previewCsv"),
   importPreview: document.querySelector("#importPreview"),
+  paletteGrid: document.querySelector("#paletteGrid"),
   settingsForm: document.querySelector("#settingsForm"),
   monthlyBudgetInput: document.querySelector("#monthlyBudgetInput"),
   savingGoalInput: document.querySelector("#savingGoalInput"),
@@ -87,7 +89,7 @@ const els = {
 init();
 
 function init() {
-  document.documentElement.dataset.theme = state.settings.theme;
+  applyAppearance();
   els.monthPicker.value = currentMonth();
   els.dateInput.value = today();
   els.monthlyBudgetInput.value = String(state.settings.monthlyBudget);
@@ -116,8 +118,16 @@ function bindEvents() {
 
   els.themeToggle.addEventListener("click", () => {
     state.settings.theme = state.settings.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = state.settings.theme;
+    applyAppearance();
     save();
+  });
+
+  document.querySelectorAll(".palette-option").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.settings.accent = button.dataset.accent || "ocean";
+      applyAppearance();
+      save();
+    });
   });
 
   els.monthPicker.addEventListener("change", render);
@@ -187,6 +197,22 @@ function render() {
   renderSummary();
   renderMovements();
   renderLatest();
+  renderPalette();
+}
+
+function applyAppearance() {
+  document.documentElement.dataset.theme = state.settings.theme || "dark";
+  document.documentElement.dataset.accent = state.settings.accent || "ocean";
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.setAttribute("content", state.settings.theme === "dark" ? "#070b12" : "#f4f6fb");
+  }
+}
+
+function renderPalette() {
+  document.querySelectorAll(".palette-option").forEach((button) => {
+    button.classList.toggle("active", button.dataset.accent === (state.settings.accent || "ocean"));
+  });
 }
 
 function renderSummary() {
@@ -195,7 +221,7 @@ function renderSummary() {
   const income = sum(txs.filter((tx) => tx.type === "income"));
   const expense = sum(txs.filter((tx) => tx.type === "expense"));
   const balance = income - expense;
-  const available = income - expense - state.settings.savingGoal;
+  const available = income || expense ? income - expense - state.settings.savingGoal : 0;
   const percent = state.settings.monthlyBudget ? Math.min(100, Math.round((expense / state.settings.monthlyBudget) * 100)) : 0;
   const circumference = 301.6;
 

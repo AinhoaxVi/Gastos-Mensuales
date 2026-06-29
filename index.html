@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#f4f6fb" />
     <title>Gastos Mensuales</title>
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
@@ -16,24 +16,53 @@
           <span class="eyebrow">Mi dinero</span>
           <h1>Gastos mensuales</h1>
         </div>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Cambiar tema">
+          <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"></path>
+          </svg>
+        </button>
       </header>
 
       <nav class="tabs" aria-label="Secciones">
         <button class="tab active" data-view="quick" type="button">
-          <span>⌂</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 11 9-8 9 8"></path>
+            <path d="M5 10v10h14V10"></path>
+            <path d="M10 20v-6h4v6"></path>
+          </svg>
           Inicio
         </button>
         <button class="tab" data-view="list" type="button">
-          <span>≡</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 6h13"></path>
+            <path d="M8 12h13"></path>
+            <path d="M8 18h13"></path>
+            <path d="M3 6h.01"></path>
+            <path d="M3 12h.01"></path>
+            <path d="M3 18h.01"></path>
+          </svg>
           Lista
         </button>
         <button class="tab" data-view="import" type="button">
-          <span>⇣</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M4 21h16"></path>
+          </svg>
           Importar
         </button>
         <button class="tab" data-view="settings" type="button">
-          <span>⚙</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 21v-7"></path>
+            <path d="M4 10V3"></path>
+            <path d="M12 21v-9"></path>
+            <path d="M12 8V3"></path>
+            <path d="M20 21v-5"></path>
+            <path d="M20 12V3"></path>
+            <path d="M2 14h4"></path>
+            <path d="M10 8h4"></path>
+            <path d="M18 16h4"></path>
+          </svg>
           Ajustes
         </button>
       </nav>
@@ -144,6 +173,34 @@
             <h2>Ajustes</h2>
             <p>Presupuesto, ahorro y copias.</p>
           </div>
+          <section class="appearance-card">
+            <div class="section-title">
+              <h2>Apariencia</h2>
+              <span>Colores de la app</span>
+            </div>
+            <div class="palette-grid" id="paletteGrid" aria-label="Paletas de color">
+              <button class="palette-option" data-accent="ocean" type="button">
+                <span class="swatch ocean"></span>
+                Azul
+              </button>
+              <button class="palette-option" data-accent="violet" type="button">
+                <span class="swatch violet"></span>
+                Morado
+              </button>
+              <button class="palette-option" data-accent="rose" type="button">
+                <span class="swatch rose"></span>
+                Rosa
+              </button>
+              <button class="palette-option" data-accent="mint" type="button">
+                <span class="swatch mint"></span>
+                Verde
+              </button>
+              <button class="palette-option" data-accent="graphite" type="button">
+                <span class="swatch graphite"></span>
+                Grafito
+              </button>
+            </div>
+          </section>
           <form class="settings-card" id="settingsForm">
             <label>
               Presupuesto mensual
